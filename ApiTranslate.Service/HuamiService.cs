@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ApiTranslate.Domain;
 using ApiTranslate.Domain.Entities;
 using ApiTranslate.Domain.Entities.Response;
 using ApiTranslate.Domain.Interfaces.Apis;
@@ -15,17 +16,19 @@ namespace ApiTranslate.Service
             _huamiApi = huamiApi;
         }
 
-        public async Task<DataMiBandResponse> GetMiBandData(DataMiBandRequest data) //ContaBancariaEntity conta = _mapper.Map<ContaBancariaEntity>(request); o correto é usar Entitys aqui
+        public async Task<ResultData> GetMiBandData(DataMiBandRequest data) //ContaBancariaEntity conta = _mapper.Map<ContaBancariaEntity>(request); o correto é usar Entitys aqui
         {
             try
             {
-                var result = await _huamiApi.GetHuamiBandData(data);
+                DataMiBandResponse result = await _huamiApi.GetHuamiBandData(data);
 
-                return result;
+                //aqui vai acontecer o tratamneto dos dados
+
+                return new ResultData( true, result);
             }
             catch
             {
-                throw;
+                return new ResultData(false, "Não foi possível obter os dados.");
             }
         }
     }

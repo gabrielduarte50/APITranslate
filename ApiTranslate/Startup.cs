@@ -8,17 +8,17 @@ using ApiTranslate.Infra.CrossCutting;
 using ApiTranslate.Domain;
 using ApiTranslate.Domain.Interfaces.Service;
 using ApiTranslate.Domain.Interfaces.Apis;
+using ApiTranslate.Infra.CrossCutting.Apis;
 
 namespace ApiTranslate
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,8 +34,19 @@ namespace ApiTranslate
             services.AddControllers();
             services.AddHttpContextAccessor();
             services.AddMvc();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder => builder
+                //.WithOrigins("https://localhost:4200", "") //Habilita Cors para endpoint expecifico
+                .SetIsOriginAllowed(isOriginAllowed: _ => true) //Habilitar para todas as Rotas
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                );
+            });
             services.AddScoped<IHuamiService, HuamiService>();
             services.AddScoped<IGoogleApi, GoogleApi>();
+            services.AddScoped<IHuamiApi, HuamiApi>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

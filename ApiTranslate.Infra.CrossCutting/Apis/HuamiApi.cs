@@ -21,7 +21,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                     allow_registration = "false",
                     country_code = "BR",
                     app_name = "com.xiaomi.hm.health",
-                    device_id = deviceId, // "FE:22:50:4B:49:D2",
+                    device_id = "FE:22:50:4B:49:D2", // "FE:22:50:4B:49:D2",
                     third_name = "google",
                     app_version = "4.8.1",
                     device_model = "android_phone"
@@ -55,10 +55,19 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
         {
             try
             {
-                var credential = await GetHuamiCredentials(data.DeviceId);
+                // CredentialResponse credential = await GetHuamiCredentials(data.DeviceId);
+                //user_id = 3082192403
+                //apptoken = "UQVBQFJyQktGHlp6QkpbRl5LRl5qek4uXAQABAAAAAD49OnYivqtWLh9k2urSZWlj_FFDiRtnm-c8Bh62DN5O8VEFtGSHO7ZOVmvGo6LttOuQN_BNB1dPdgvVocBv_5jv_mUUt9DyJO3bV4lYknZ65CI_ukFrrxVNmsVzUXtGXK-A-BS9_cy8bzmnSfHEX-btve_Szc…"
+                CredentialResponse credential = new CredentialResponse
+                {
+                    UserId = "3082192403",
+                    Token = "UQVBQFJyQktGHlp6QkpbRl5LRl5qek4uXAQABAAAAAD49OnYivqtWLh9k2urSZWlj_FFDiRtnm-c8Bh62DN5O8VEFtGSHO7ZOVmvGo6LttOuQN_BNB1dPdgvVocBv_5jv_mUUt9DyJO3bV4lYknZ65CI_ukFrrxVNmsVzUXtGXK-A-BS9_cy8bzmnSfHEX-btve_Szc…"
+
+                };
+
                 var options = new RestClientOptions("https://api-mifit.huami.com/v1/data/band_data.json")
                 {
-                    Timeout = 100,
+                    Timeout = -1,
                     FollowRedirects = false
                 };
                 var client = new RestClient(options);
@@ -69,12 +78,9 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 request.AddParameter("userId", $"{credential.UserId}");
                 request.AddParameter("from_date", $"{data.startDate:yyyy-MM-dd}");
                 request.AddParameter("to_date", $"{data.endDate:yyyy-MM-dd}");
-                request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-                request.AddHeader("Accept", "application/json");
-                
                 client.AddDefaultHeader("Authorization", string.Format("Bearer {0}", credential.Token));
                 
-                var response = await client.PostAsync(request);
+                var response = await client.ExecuteAsync(request);
 
                 var responseData = System.Text.Json.JsonSerializer.Deserialize<DataMiBandResponse>(response.Content); //entedenr aqui pois provavlemente é um array
 
