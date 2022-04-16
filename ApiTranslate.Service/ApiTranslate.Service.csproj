@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Google.Apis.Core" Version="1.57.0" />
     <PackageReference Include="RestSharp" Version="107.3.0" />
   </ItemGroup>
 

@@ -4,48 +4,49 @@ using Newtonsoft.Json;
 using ApiTranslate.Domain.Interfaces.Apis;
 using ApiTranslate.Domain.Entities;
 using ApiTranslate.Domain.Entities.Response;
+using System.Web;
+using System;
 
 namespace ApiTranslate.Infra.CrossCutting.Apis
 {
     public class HuamiApi : IHuamiApi
     {
-        public async Task<CredentialResponse> GetHuamiCredentials(string deviceId)
+        public async Task<CredentialResponse> GetHuamiCredentials(string deviceId) // "FE:22:50:4B:49:D2",
         {
 
             try
             {
-                var login_payload = new
+                var options = new RestClientOptions("https://account.huami.com/v2/client/")
                 {
-                    code = "access_token", // vem de outra chamada
-                    grant_type = "access_token",
-                    allow_registration = "false",
-                    country_code = "BR",
-                    app_name = "com.xiaomi.hm.health",
-                    device_id = "FE:22:50:4B:49:D2", // "FE:22:50:4B:49:D2",
-                    third_name = "google",
-                    app_version = "4.8.1",
-                    device_model = "android_phone"
-                };
-                var options = new RestClientOptions("https://account.huami.com/v2/client/login")
-                {
-                    Timeout = 100,
+                    Timeout = -1,
                     FollowRedirects= false
                 };
                 var client = new RestClient(options);
 
-                RestRequest request = new RestRequest("/", Method.Post); // entender pq agr pede essa "/"
-                request.AddHeader("Content-Type", "application/json");
-                request.AddHeader("Accept", "application/json");
-                var json = JsonConvert.SerializeObject(login_payload);
-                request.AddParameter("application/json", json, ParameterType.RequestBody);
+                RestRequest request = new RestRequest("login", Method.Post);
+                request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                var response = await client.ExecuteAsync(request);
+                //o campo code vem da autorização do google que vai ser o empecilho do projeto
+                //no momento apenas consegui fazer rodar aqui passando ele depois de logar no app no celular
+                //obter pela planilha e colocar o token gerado nessa hora aqui
+                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM_a2gF0khAbA6ZWtuxRjeluiTl30ousud5tTBPAbKd0Lvqjz9MV4vGMsJYXL2DHPUE_6wws82RTZfoLj7oX-68LZtdVUaEQ1o0DXS0s_oUCOVR8w6XBM8i7nzPogjznupLza9Q5yHHSfTOXxRVaSHv7"));
+                request.AddParameter("grant_type", HttpUtility.HtmlEncode("access_token"));
+                request.AddParameter("allow_registration", HttpUtility.HtmlEncode("false"));
+                request.AddParameter("country_code", HttpUtility.HtmlEncode("BR"));
+                request.AddParameter("app_name", HttpUtility.HtmlEncode("com.xiaomi.hm.health"));
+                request.AddParameter("device_id", HttpUtility.HtmlEncode($"{deviceId}"));
+                request.AddParameter("third_name", HttpUtility.HtmlEncode("google"));
+                request.AddParameter("app_version", HttpUtility.HtmlEncode("4.8.1"));
+                request.AddParameter("device_model", HttpUtility.HtmlEncode("android_phone"));
 
-                var responseCredential = System.Text.Json.JsonSerializer.Deserialize<CredentialResponse>(response.Content);
+                var response = await client.ExecuteAsync(request); //recebendo erro_code: 0106 -> devido ao campo code
+
+                CredentialResponse responseCredential = JsonConvert.DeserializeObject<CredentialResponse>(response.Content); //ver a melhor forma de mapear da resposta para o que quero
+
 
                 return responseCredential;
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }
@@ -55,15 +56,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
         {
             try
             {
-                // CredentialResponse credential = await GetHuamiCredentials(data.DeviceId);
-                //user_id = 3082192403
-                //apptoken = "UQVBQFJyQktGHlp6QkpbRl5LRl5qek4uXAQABAAAAAD49OnYivqtWLh9k2urSZWlj_FFDiRtnm-c8Bh62DN5O8VEFtGSHO7ZOVmvGo6LttOuQN_BNB1dPdgvVocBv_5jv_mUUt9DyJO3bV4lYknZ65CI_ukFrrxVNmsVzUXtGXK-A-BS9_cy8bzmnSfHEX-btve_Szc…"
-                CredentialResponse credential = new CredentialResponse
-                {
-                    UserId = "3082192403",
-                    Token = "UQVBQFJyQktGHlp6QkpbRl5LRl5qek4uXAQABAAAAAD49OnYivqtWLh9k2urSZWlj_FFDiRtnm-c8Bh62DN5O8VEFtGSHO7ZOVmvGo6LttOuQN_BNB1dPdgvVocBv_5jv_mUUt9DyJO3bV4lYknZ65CI_ukFrrxVNmsVzUXtGXK-A-BS9_cy8bzmnSfHEX-btve_Szc…"
-
-                };
+                CredentialResponse credential = await GetHuamiCredentials(data.DeviceId);
 
                 var options = new RestClientOptions("https://api-mifit.huami.com/v1/data/band_data.json")
                 {
@@ -73,16 +66,16 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 var client = new RestClient(options);
 
                 RestRequest request = new RestRequest("/", Method.Get);
-                request.AddParameter("query_type","summary");
-                request.AddParameter("device_type","android_phone");
-                request.AddParameter("userId", $"{credential.UserId}");
-                request.AddParameter("from_date", $"{data.startDate:yyyy-MM-dd}");
-                request.AddParameter("to_date", $"{data.endDate:yyyy-MM-dd}");
-                client.AddDefaultHeader("Authorization", string.Format("Bearer {0}", credential.Token));
+                request.AddParameter("query_type", HttpUtility.HtmlEncode("summary"));
+                request.AddParameter("device_type", HttpUtility.HtmlEncode("android_phone"));
+                request.AddParameter("userId", HttpUtility.HtmlEncode($"{credential.token_info.user_id}"));
+                request.AddParameter("from_date", HttpUtility.HtmlEncode( $"{data.startDate:yyyy-MM-dd}"));
+                request.AddParameter("to_date", HttpUtility.HtmlEncode($"{data.endDate:yyyy-MM-dd}"));
+                client.AddDefaultHeader("apptoken", string.Format("{0}", HttpUtility.HtmlEncode(credential.token_info.app_token)));
                 
                 var response = await client.ExecuteAsync(request);
 
-                var responseData = System.Text.Json.JsonSerializer.Deserialize<DataMiBandResponse>(response.Content); //entedenr aqui pois provavlemente é um array
+                DataMiBandResponse responseData = System.Text.Json.JsonSerializer.Deserialize<DataMiBandResponse>(response.Content);
 
                 return responseData;
             }
