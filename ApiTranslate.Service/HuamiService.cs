@@ -22,9 +22,12 @@ namespace ApiTranslate.Service
         {
             try
             {
-                DataMiBandResponse result = await _huamiApi.GetHuamiBandData(data);
+                CredentialResponse credential = await _huamiApi.GetHuamiCredentials(data.DeviceId);
+
+                DataMiBandResponse resultData = await _huamiApi.GetHuamiBandData(data, credential.token_info);
+                DataMiBandResponse resultSportData = await _huamiApi.GetHuamiBandDataSport(data, credential.token_info);
                 
-                foreach(Datum e in result.data)
+                foreach(Datum e in resultData.data)
                 {
                     byte[] dt = Convert.FromBase64String(e.summary);
                     e.summary = Encoding.UTF8.GetString(dt);
@@ -32,7 +35,7 @@ namespace ApiTranslate.Service
 
                 //aqui vai acontecer o tratamneto dos dados
 
-                return new ResultData(true, result.data);
+                return new ResultData(true, resultData.data);
             }
             catch
             {
