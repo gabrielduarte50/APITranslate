@@ -9,6 +9,6 @@ namespace ApiTranslate.Domain.Interfaces.Apis
     {
         Task<CredentialResponse> GetHuamiCredentials(string deviceId);
         Task<DataMiBandResponse> GetHuamiBandData(DataMiBandRequest data, TokenInfo credential);
-        Task<DataMiBandResponse> GetHuamiBandDataSport(DataMiBandRequest data, TokenInfo credential);
+        Task<DataSportResponse> GetHuamiBandDataSport(DataMiBandRequest data, TokenInfo credential);
     }
 }

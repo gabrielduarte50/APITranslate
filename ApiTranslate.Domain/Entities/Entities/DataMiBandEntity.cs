@@ -4,16 +4,18 @@ using System.Text;
 
 namespace ApiTranslate.Domain.Entities.Entities
 {
-    class DataMiBandEntity
+
+    public class DataMiBandEntity //corpo final dos elementos da miband
     {
-        // pensar na estrutura da resposta com os dados que eu quero e preciso
-        // por enquanto acredito que posso usar o seguinte:
-        //heart rate
-        //Steps
-        //PAI
-        //
+            public int v { get; set; }
+            public int goal { get; set; }
+            public string tz { get; set; }
+            public string sn { get; set; }
+            public int byteLength { get; set; }
+            public int sync { get; set; }
     }
-}
+ }
+
 
 
 

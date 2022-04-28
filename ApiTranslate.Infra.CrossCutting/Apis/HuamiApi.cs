@@ -29,7 +29,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 //o campo code vem da autorização do google que vai ser o empecilho do projeto
                 //no momento apenas consegui fazer rodar aqui passando ele depois de logar no app no celular
                 //obter pela planilha e colocar o token gerado nessa hora aqui
-                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM8Is4ponWn15Vg2y-nyPRDsyDad9cQ3ouplW-SIuZf4f-Iiim3xg-2hDjuOuGdvsvu8yM_uhbvQU3iERuEE7CH7Fi3l6_mezGlB_8bxF0PGU_WQWM7Wb_orVQ0Yff6BEZbYXs9ankz-r-iQROiiOI5H"));
+                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM8U1eSKYmqxwBYebH4J58oqs2kiJFPWr_KMAfNRwE6cPcGMWmp_Vi-sXddH12J-KnCfrOyPj4odGIi3RKmGnkPS3IrJtHrvmyTrh5ng3uiy3jiwW8-HIUyNGvdA9bAa1KNJm9kI428KdqDAlC-07zf5"));
                 request.AddParameter("grant_type", HttpUtility.HtmlEncode("access_token"));
                 request.AddParameter("allow_registration", HttpUtility.HtmlEncode("false"));
                 request.AddParameter("country_code", HttpUtility.HtmlEncode("BR"));
@@ -83,7 +83,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
             }
         }
 
-        public async Task<DataMiBandResponse> GetHuamiBandDataSport(DataMiBandRequest data, TokenInfo credential)
+        public async Task<DataSportResponse> GetHuamiBandDataSport(DataMiBandRequest data, TokenInfo credential)
         {
             try
             {
@@ -104,9 +104,9 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
 
                 var response = await client.ExecuteAsync(request);
 
-                DataMiBandResponse responseData = System.Text.Json.JsonSerializer.Deserialize<DataMiBandResponse>(response.Content);
+                DataSportResponse responseSportData = System.Text.Json.JsonSerializer.Deserialize<DataSportResponse>(response.Content);
 
-                return responseData;
+                return responseSportData;
             }
             catch
             {
