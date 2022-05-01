@@ -4,17 +4,21 @@ using System.Text;
 
 namespace ApiTranslate.Domain.Entities.Entities
 {
-
-    public class DataMiBandEntity //corpo final dos elementos da miband
+    public class DataMiBandEntity //corpo final dos elementos da miband - vincular cada elemento da miBnad e do sportData
     {
-            public int v { get; set; }
-            public int goal { get; set; }
-            public string tz { get; set; }
-            public string sn { get; set; }
-            public int byteLength { get; set; }
-            public int sync { get; set; }
+        public int totalSteps { get; set; }
+        public DateTime date_time { get; set; }
+        public string walk_distance { get; set; }
+        public string walk_speed { get; set; }
+        public int rhr { get; set; }
+        public string light_sleep { get; set; }
+        public string deep_sleep { get; set; }
+        public string rem_sleep { get; set; }
+        public int totalPai { get; set; }
+        public int totalCal { get; set; } //field with cal and runCal -> understand de field Stage and yoursElements
+
     }
- }
+}
 
 
 
