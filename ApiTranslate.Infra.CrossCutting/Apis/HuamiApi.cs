@@ -29,7 +29,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 //o campo code vem da autorização do google que vai ser o empecilho do projeto
                 //no momento apenas consegui fazer rodar aqui passando ele depois de logar no app no celular
                 //obter pela planilha e colocar o token gerado nessa hora aqui
-                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM8U1eSKYmqxwBYebH4J58oqs2kiJFPWr_KMAfNRwE6cPcGMWmp_Vi-sXddH12J-KnCfrOyPj4odGIi3RKmGnkPS3IrJtHrvmyTrh5ng3uiy3jiwW8-HIUyNGvdA9bAa1KNJm9kI428KdqDAlC-07zf5"));
+                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM8pDD5K-bg3C5Yg6gEMjas7HR8rPmTc3oHIyUkmQ__um_ZVTiX7Etiezj-hm8mFrfgLtd-MSJredoi8niZ4_siY-fXvwXccPQIJh6IyXp3vlKFomd9c2ukjl4VIJxijJwW2jPesnnyMFLx-KsDZgMEI"));
                 request.AddParameter("grant_type", HttpUtility.HtmlEncode("access_token"));
                 request.AddParameter("allow_registration", HttpUtility.HtmlEncode("false"));
                 request.AddParameter("country_code", HttpUtility.HtmlEncode("BR"));

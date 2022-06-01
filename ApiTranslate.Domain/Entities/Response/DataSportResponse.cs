@@ -8,13 +8,13 @@ namespace ApiTranslate.Domain.Entities.Response
     {
         public string trackid { get; set; }
         public string source { get; set; }
-        public string dis { get; set; }
-        public string calorie { get; set; }
+        public string dis { get; set; } //talvez os dois necessarios aqui
+        public string calorie { get; set; } // e esse tb
         public string end_time { get; set; }
         public string run_time { get; set; }
         public string avg_pace { get; set; }
         public string avg_frequency { get; set; }
-        public string avg_heart_rate { get; set; }
+        public string avg_heart_rate { get; set; } //frequencia media tb
         public int type { get; set; }
         public string location { get; set; }
         public string city { get; set; }
@@ -27,7 +27,7 @@ namespace ApiTranslate.Domain.Entities.Response
         public int altitude_descend { get; set; }
         public int total_step { get; set; }
         public int avg_stride_length { get; set; }
-        public int max_frequency { get; set; }
+        public int max_frequency { get; set; } //esse cara aqui tb
         public int max_altitude { get; set; }
         public int min_altitude { get; set; }
         public int lap_distance { get; set; }
@@ -42,8 +42,8 @@ namespace ApiTranslate.Domain.Entities.Response
         public int climb_dis_descend_time { get; set; }
         public string child_list { get; set; }
         public int parent_trackid { get; set; }
-        public int max_heart_rate { get; set; }
-        public int min_heart_rate { get; set; }
+        public int max_heart_rate { get; set; } //esse aqui
+        public int min_heart_rate { get; set; } // e esse aqui
         public int swolf { get; set; }
         public int total_strokes { get; set; }
         public int total_trips { get; set; }
