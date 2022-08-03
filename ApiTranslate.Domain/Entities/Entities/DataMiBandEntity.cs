@@ -27,7 +27,3 @@ namespace ApiTranslate.Domain.Entities.Entities
 
 
 
-//O valor PAI foi introduzido por Huami em seus dispositivos Amazfit e 
-//    basicamente podemos defini-lo como um indicador pessoal de atividade fisiológica. 
-//    Em outras palavras, é um valor que informa o quão saudável você está em termos de 
-//    atividade física ou se precisa melhorar
