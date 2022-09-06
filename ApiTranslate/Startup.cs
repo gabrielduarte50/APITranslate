@@ -9,6 +9,8 @@ using ApiTranslate.Domain;
 using ApiTranslate.Domain.Interfaces.Service;
 using ApiTranslate.Domain.Interfaces.Apis;
 using ApiTranslate.Infra.CrossCutting.Apis;
+using ApiTranslate.Domain.Interfaces.Repositories;
+using ApiTranslate.Infra.CrossCutting.Repositories;
 
 namespace ApiTranslate
 {
@@ -44,7 +46,9 @@ namespace ApiTranslate
                 .AllowCredentials()
                 );
             });
+            services.AddScoped<IHapiFhirService, HapiFhirService>();
             services.AddScoped<IHuamiService, HuamiService>();
+            services.AddScoped<IHapiFhirRepository, HapiFhirRepository>();
             services.AddScoped<IGoogleApi, GoogleApi>();
             services.AddScoped<IHuamiApi, HuamiApi>();
         }

@@ -3,13 +3,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Hl7.Fhir.Model;
+using Hl7.Fhir.Rest;
+using Hl7.Fhir.Serialization;
 
 namespace ApiTranslate
 {
-    public class Program
+    public static class Program
     {
+      
         public static void Main(string[] args)
         {
+           
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -22,6 +27,3 @@ namespace ApiTranslate
     }
 }
 
-// usar de referencia - https://restsharp.dev/usage.html#authenticator
-// https://stackoverflow.com/questions/24057939/login-using-google-oauth-2-0-with-c-sharp
-//COMUNICAR COM OUTRA API PARA O ENVIO, VOU RPECISAR DE UM SISTEMA DE HOST - CLIENT SERVER - OU OUTRA PARADA?

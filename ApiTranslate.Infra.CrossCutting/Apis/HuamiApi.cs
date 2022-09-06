@@ -29,7 +29,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 //o campo code vem da autorização do google que vai ser o empecilho do projeto
                 //no momento apenas consegui fazer rodar aqui passando ele depois de logar no app no celular
                 //obter pela planilha e colocar o token gerado nessa hora aqui
-                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM_a2gF0khAbA6ZWtuxRjeluiTl30ousud5tTBPAbKd0Lvqjz9MV4vGMsJYXL2DHPUE_6wws82RTZfoLj7oX-68LZtdVUaEQ1o0DXS0s_oUCOVR8w6XBM8i7nzPogjznupLza9Q5yHHSfTOXxRVaSHv7"));
+                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM8pDD5K-bg3C5Yg6gEMjas7HR8rPmTc3oHIyUkmQ__um_ZVTiX7Etiezj-hm8mFrfgLtd-MSJredoi8niZ4_siY-fXvwXccPQIJh6IyXp3vlKFomd9c2ukjl4VIJxijJwW2jPesnnyMFLx-KsDZgMEI"));
                 request.AddParameter("grant_type", HttpUtility.HtmlEncode("access_token"));
                 request.AddParameter("allow_registration", HttpUtility.HtmlEncode("false"));
                 request.AddParameter("country_code", HttpUtility.HtmlEncode("BR"));
@@ -52,12 +52,10 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
             }
         }
 
-        public async Task<DataMiBandResponse> GetHuamiBandData(DataMiBandRequest data)
+        public async Task<DataMiBandResponse> GetHuamiBandData(DataMiBandRequest data, TokenInfo credential)
         {
             try
             {
-                CredentialResponse credential = await GetHuamiCredentials(data.DeviceId);
-
                 var options = new RestClientOptions("https://api-mifit.huami.com/v1/data/band_data.json")
                 {
                     Timeout = -1,
@@ -68,16 +66,47 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 RestRequest request = new RestRequest("/", Method.Get);
                 request.AddParameter("query_type", HttpUtility.HtmlEncode("summary"));
                 request.AddParameter("device_type", HttpUtility.HtmlEncode("android_phone"));
-                request.AddParameter("userId", HttpUtility.HtmlEncode($"{credential.token_info.user_id}"));
+                request.AddParameter("userId", HttpUtility.HtmlEncode($"{credential.user_id}"));
                 request.AddParameter("from_date", HttpUtility.HtmlEncode( $"{data.startDate:yyyy-MM-dd}"));
                 request.AddParameter("to_date", HttpUtility.HtmlEncode($"{data.endDate:yyyy-MM-dd}"));
-                client.AddDefaultHeader("apptoken", string.Format("{0}", HttpUtility.HtmlEncode(credential.token_info.app_token)));
+                client.AddDefaultHeader("apptoken", string.Format("{0}", HttpUtility.HtmlEncode(credential.app_token)));
                 
                 var response = await client.ExecuteAsync(request);
 
                 DataMiBandResponse responseData = System.Text.Json.JsonSerializer.Deserialize<DataMiBandResponse>(response.Content);
 
                 return responseData;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<DataSportResponse> GetHuamiBandDataSport(DataMiBandRequest data, TokenInfo credential)
+        {
+            try
+            {
+                var options = new RestClientOptions("https://api-mifit-us2.huami.com/v1/sport/run/history.json")
+                {
+                    Timeout = -1,
+                    FollowRedirects = false
+                };
+                var client = new RestClient(options);
+
+                RestRequest request = new RestRequest("/", Method.Get);
+               
+                request.AddParameter("userId", HttpUtility.HtmlEncode($"{credential.user_id}"));
+                request.AddParameter("from", HttpUtility.HtmlEncode($"{data.startDate:yyyy-MM-dd}"));
+                request.AddParameter("to", HttpUtility.HtmlEncode($"{data.endDate:yyyy-MM-dd}"));
+                request.AddParameter("source", HttpUtility.HtmlEncode("huami"));
+                client.AddDefaultHeader("apptoken", string.Format("{0}", HttpUtility.HtmlEncode(credential.app_token)));
+
+                var response = await client.ExecuteAsync(request);
+
+                DataSportResponse responseSportData = System.Text.Json.JsonSerializer.Deserialize<DataSportResponse>(response.Content);
+
+                return responseSportData;
             }
             catch
             {
