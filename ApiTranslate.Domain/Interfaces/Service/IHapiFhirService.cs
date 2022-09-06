@@ -9,5 +9,6 @@ namespace ApiTranslate.Domain.Interfaces.Service
     public interface IHapiFhirService
     {
         ResultData GetPatientById(string patientId);
+        ResultData PostObservation(string patientId);
     }
 }

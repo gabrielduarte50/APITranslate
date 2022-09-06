@@ -9,7 +9,7 @@ using ApiTranslate.Domain.Interfaces.Repositories;
 
 namespace ApiTranslate.Infra.CrossCutting.Repositories
 {
-    public class HapiFhirRepository : IHapiFhirRepository //qulauqer coisa chamar do nome especifico
+    public class HapiFhirRepository : IHapiFhirRepository 
     {
         private const string _fhirServer = "http://hapi.fhir.org/baseR4";
         // private const string _fhirServer = "http://vonk.fire.ly";
@@ -33,6 +33,19 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
             try
             {
                 var response = _client.Read<Patient>(location);
+                return response;
+            }
+            catch (Hl7.Fhir.ElementModel.StructuralTypeException structuralTypeException)
+            {
+                throw structuralTypeException;
+            }
+        }
+
+        public Observation POstObservationData(Observation obs)
+        {
+            try
+            {
+                var response = _client.Create<Observation>(obs);
                 return response;
             }
             catch (Hl7.Fhir.ElementModel.StructuralTypeException structuralTypeException)

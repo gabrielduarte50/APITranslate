@@ -10,6 +10,7 @@ namespace ApiTranslate.Domain.Interfaces.Repositories
     public interface IHapiFhirRepository
     {
         Patient GetPatientById(string patientId);
+        Observation POstObservationData(Observation obs);
        
     }
 }
