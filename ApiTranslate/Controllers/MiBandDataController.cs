@@ -31,9 +31,14 @@ namespace ApiTranslate.Controllers
                 endDate = endDate
             };                   
            
-            ResultData result = await _huamiService.GetMiBandData(data);
+            var resultMiBand = await _huamiService.GetMiBandData(data);
 
-           
+            ResultData result = new ResultData //validar depois - vou precisar refatorar muita coisa
+            {
+                Success = true,
+                Data = resultMiBand
+            };
+
             if (result.Success)
             {
                 return Ok(result) ;

@@ -21,7 +21,7 @@ namespace ApiTranslate.Service
             _huamiApi = huamiApi;
         }
 
-        public async Task<ResultData> GetMiBandData(DataMiBandRequest data) 
+        public async Task<List<DataMiBandEntity>> GetMiBandData(DataMiBandRequest data) 
         {
             try
             {
@@ -31,28 +31,23 @@ namespace ApiTranslate.Service
                 DataSportResponse resultSportData = await _huamiApi.GetHuamiBandDataSport(data, credential.token_info);
                
               
-                foreach (Datum e in resultData.data) //put summary in Json formatter
+                foreach (Datum e in resultData.data)
                 {
                     byte[] dt = Convert.FromBase64String(e.summary);
                     e.summary = Encoding.UTF8.GetString(dt);
                 }
 
-
                 List<DataMiBandEntity> summaryElements = TreatDataResponseToEntity(resultData, resultSportData);
-                
 
-
-
-                //aqui vai acontecer o tratamneto dos dados
-
-                return new ResultData(true, summaryElements);
+                return summaryElements;
             }
-            catch(Exception ex)
+            catch
             {
-                return new ResultData(false, "Não foi possível obter os dados.");
+                return null;
             }
         }
 
+        //Esse método faz os calulos. em algo errado, não ta retornando legal nao
         private static List<DataMiBandEntity> TreatDataResponseToEntity(DataMiBandResponse resultData, DataSportResponse resultSportData) //gerar a entidade final aqui
         {
             List<DataMiBandEntity> data = new List<DataMiBandEntity>();

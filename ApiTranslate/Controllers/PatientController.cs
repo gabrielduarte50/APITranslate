@@ -42,12 +42,16 @@ namespace ApiTranslate.Controllers
 
         [Route("post")]
         [HttpPost]
-        public IActionResult PostPatientObservation(string patientId) //1190270
+        public async Task<IActionResult> PostPatientObservation(string patientId, string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
         {
-            // tentar enviar como um campo Observation - Bundle
-           
+            DataMiBandRequest request = new DataMiBandRequest
+            {
+                DeviceId = deviceId,
+                startDate = startDate,
+                endDate = endDate
+            };
 
-            ResultData result = _hapiFhirService.PostObservation(patientId);
+            ResultData result = await _hapiFhirService.PostObservation(patientId, request);
 
 
             if (result.Success)

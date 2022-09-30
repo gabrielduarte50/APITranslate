@@ -41,7 +41,7 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
             }
         }
 
-        public Observation POstObservationData(Observation obs)
+        public Observation PostObservationData(Observation obs)
         {
             try
             {
