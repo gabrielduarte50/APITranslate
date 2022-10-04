@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Xml;
 using System.IO;
 using Hl7.Fhir.Serialization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiTranslate.Controllers
 {
+   // [Authorize]
     [Route("/Patient")]
     [ApiController]
     public class PatientController : ControllerBase
