@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using ApiTranslate.Domain;
@@ -73,24 +74,27 @@ namespace ApiTranslate.Service
                 element.rem_sleep = getFormattedDuration(summaryElements.slp.dt * 60 * 1000);
                 element.sleep_duration = getFormattedDuration(tstInMs);
 
-                //gain data from sport data
+                //gain data from sport data - validar se o type é ou nao importante
+                var dateSearch = element.date_time.ToShortDateString().ToString();
                 var walk = resultSportData.data.summary.Find(
-                    s => (getFormattedTime(s.end_time).ToString() == element.date_time.ToString())
-                    && (s.type == 6 || s.type == 8)                   
+                    s => (getFormattedTime(s.end_time) == dateSearch)
                 );
 
-                if(walk != null)
+                if(walk != null) //validar se a caloria do summary realmente ta na mesma data da de corrida
                 {
-                    element.walk_distance = walk.dis; //em metros - validar se não é milhas e a necessidade de converter
+                    element.walk_distance = walk.dis; 
 
                     //calories
                     var totalCalRun = walk.calorie; //calorias de corrida
-                    element.totalCal = totalCalRun + summaryElements.stp.cal.ToString();
+                    element.totalCal = Somar(totalCalRun, summaryElements.stp.cal.ToString()); 
 
                     //heart
                     element.avg_heart_rate = walk.avg_heart_rate;
                     element.max_heart_rate = walk.max_heart_rate;
                     element.min_heart_rate = walk.min_heart_rate;
+
+                    //clear walk
+                    walk = null;
                 }
 
                 data.Add(new DataMiBandEntity()
@@ -117,11 +121,19 @@ namespace ApiTranslate.Service
 
             return formattedDuration;
         }
-        private static DateTime getFormattedTime(string time) 
-        {    
-            var date = (new DateTime(1970, 1, 1)).AddMilliseconds(double.Parse(time + "000"));
+        private static string getFormattedTime(string time) 
+        {
+            DateTime date = (new DateTime(1970, 1, 1)).AddMilliseconds(double.Parse(time + "000"));
+            var d = date.ToShortDateString().ToString();
 
-            return date;
+            return d;
+        }
+        private static string Somar(string numA, string numB)
+        {
+            var bigA = float.Parse(numA, CultureInfo.InvariantCulture.NumberFormat); 
+            var bigB = float.Parse(numB, CultureInfo.InvariantCulture.NumberFormat);
+
+            return (bigA + bigB).ToString();
         }
 
     }
