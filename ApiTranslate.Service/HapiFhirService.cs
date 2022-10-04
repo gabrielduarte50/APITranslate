@@ -50,7 +50,6 @@ namespace ApiTranslate.Service
         public async Task<ResultData> PostObservation(string patientId, DataMiBandRequest request)
         {
             
-
             try
             {   //busca o paciente
                 Patient patient = _repo.GetPatientById(patientId);

@@ -13,8 +13,6 @@ namespace ApiTranslate.Infra.CrossCutting
         UserCredential userCredential ;
         public UserCredential GetAccessTokenAccount()
         {
-            //string OAUTH_CLIENT_ID = "412602187402-606djaeg6im0ng2a4bg9t846v8la6t9c.apps.googleusercontent.com";
-            //string OAUTH_CLIENT_SECRET = "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";
             
             string OAUTH_CLIENT_ID = "412602187402-2kmnlf3e71ift7re24sgid4eom25kjrt.apps.googleusercontent.com";
             string OAUTH_CLIENT_SECRET = "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";

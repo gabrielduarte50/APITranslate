@@ -48,7 +48,7 @@ namespace ApiTranslate.Service
         }
 
         //Esse método faz os calulos. em algo errado, não ta retornando legal nao
-        private static List<DataMiBandEntity> TreatDataResponseToEntity(DataMiBandResponse resultData, DataSportResponse resultSportData) //gerar a entidade final aqui
+        private static List<DataMiBandEntity> TreatDataResponseToEntity(DataMiBandResponse resultData, DataSportResponse resultSportData) 
         {
             List<DataMiBandEntity> data = new List<DataMiBandEntity>();
             DataMiBandEntity element = new DataMiBandEntity();
@@ -56,15 +56,15 @@ namespace ApiTranslate.Service
 
             foreach (Datum e in resultData.data)
             {
-                element.date_time = DateTime.ParseExact(e.date_time, "yyyy-MM-dd", CultureInfo.InvariantCulture); //date - necessary put this in format long to convert
+                element.date_time = DateTime.ParseExact(e.date_time, "yyyy-MM-dd", CultureInfo.InvariantCulture); 
 
                 //transform summmary 
                 summaryElements = System.Text.Json.JsonSerializer.Deserialize<SummaryMiBand>(e.summary); 
 
                 //transform MiBandData into a part of Entity
-                element.rhr = summaryElements.slp.rhr > 0 ? summaryElements.slp.rhr : 0; //validar esse 0 aqui
+                element.rhr = summaryElements.slp.rhr > 0 ? summaryElements.slp.rhr : 0; 
                 element.totalSteps = summaryElements.stp.ttl;
-                element.totalPai = summaryElements.goal; // summaryElements.pai.tp - - nao mapeou isso aqui nao -  talvez seja o goal
+                element.totalPai = summaryElements.goal; 
 
                 //sleep data
                 var tstInMs = summaryElements.slp.ed * 1000 - summaryElements.slp.st * 1000 - summaryElements.slp.wk * 60 * 1000;
@@ -78,6 +78,7 @@ namespace ApiTranslate.Service
                     s => (getFormattedTime(s.end_time).ToString() == element.date_time.ToString())
                     && (s.type == 6 || s.type == 8)                   
                 );
+
                 if(walk != null)
                 {
                     element.walk_distance = walk.dis; //em metros - validar se não é milhas e a necessidade de converter
@@ -92,12 +93,25 @@ namespace ApiTranslate.Service
                     element.min_heart_rate = walk.min_heart_rate;
                 }
 
-                data.Add(element);
-            }
+                data.Add(new DataMiBandEntity()
+                {
+                    date_time = element.date_time, 
+                    rhr = element.rhr, 
+                    totalSteps = element.totalSteps,
+                    totalPai = element.totalPai,
+                    deep_sleep = element.deep_sleep,
+                    light_sleep = element.light_sleep, 
+                    rem_sleep = element.rem_sleep ,
+                    sleep_duration = element.sleep_duration,
+                    totalCal = element.totalCal,
+                    avg_heart_rate = element.avg_heart_rate
+                });
+
+             }
             return data;
         }
-        private static string getFormattedDuration(int timeInMilliseconds) // isolar em outro service ou shared 
-        {   //need find how convert this e pass to formatter date 
+        private static string getFormattedDuration(int timeInMilliseconds) 
+        {    
             TimeSpan time = TimeSpan.FromMilliseconds(timeInMilliseconds);
             var formattedDuration = time.ToString(@"hh\:mm");
 
@@ -113,4 +127,3 @@ namespace ApiTranslate.Service
     }
 
 }
-//ver sobre entity framework se vai ser preciso ou nao

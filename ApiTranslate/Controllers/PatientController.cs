@@ -23,8 +23,7 @@ namespace ApiTranslate.Controllers
         {
             _hapiFhirService = hapiFhirService;
         }
-        //criar o seguinte: uma busca pelo nome ou outra info e caso nao ache,
-        //crie o novo cliente - https://www.youtube.com/watch?v=aP6DRYH-qOI&t=450s.
+       
         [HttpGet]
         public IActionResult GetPatientById(string patientId) //1190270
         {
