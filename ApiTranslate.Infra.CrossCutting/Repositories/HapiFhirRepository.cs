@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
 using Hl7.Fhir.Serialization;
 using System.Threading.Tasks;
 using ApiTranslate.Domain.Interfaces.Repositories;
+using System.Linq;
+using ApiTranslate.Domain.Entities.Response;
+using Newtonsoft.Json;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace ApiTranslate.Infra.CrossCutting.Repositories
 {
     public class HapiFhirRepository : IHapiFhirRepository 
     {
         private const string _fhirServer = "http://hapi.fhir.org/baseR4";
-        // private const string _fhirServer = "http://vonk.fire.ly";
         private readonly FhirClient _client;
 
         public HapiFhirRepository()
@@ -25,14 +29,37 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
             _client.Settings.Timeout = 120000; // The timeout is set in milliseconds, with a default of 100000
         }
 
-        public  Patient GetPatientById(string patientId)
+        public async Task<List<Observation>> GetObservation(string patientId)
         {
-            var location = new Uri($"http://hapi.fhir.org/baseR4/Patient/{patientId}");
-            //var location = new Uri($"https://vonk.fire.ly/Patient/{patientId}");
+            try
+            {
+                List<Observation> result = new List<Observation>();
+                var searchParameters = new SearchParams();
+                searchParameters.Parameters.Add(new Tuple<string, string>("patient", patientId));
+                var responsBundle = await _client.SearchAsync<Observation>(searchParameters).ConfigureAwait(false);
+                foreach (var entry in responsBundle.Entry)
+                {
+                    var observation = (Observation)entry.Resource;
+                    result.Add(observation);
+                  
+                }
+                return result;
+
+            }
+            catch (Hl7.Fhir.ElementModel.StructuralTypeException structuralTypeException)
+            {
+                throw structuralTypeException;
+            }
+        }
+
+        public async Task<Patient> GetPatientById(string patientId)
+        {
+            var location = new Uri($"https://hapi.fhir.org/baseR4/Patient/{patientId}");
 
             try
             {
-                var response = _client.Read<Patient>(location);
+                Patient response = await _client.ReadAsync<Patient>(location);
+
                 return response;
             }
             catch (Hl7.Fhir.ElementModel.StructuralTypeException structuralTypeException)

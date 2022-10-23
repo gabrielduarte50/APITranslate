@@ -9,8 +9,9 @@ namespace ApiTranslate.Domain.Interfaces.Repositories
    
     public interface IHapiFhirRepository
     {
-        Patient GetPatientById(string patientId);
+        Task<Patient> GetPatientById(string patientId);
         Observation PostObservationData(Observation obs);
+        Task<List<Observation>> GetObservation(string patientId);
        
     }
 }

@@ -30,7 +30,6 @@ namespace ApiTranslate.Service
 
                 DataMiBandResponse resultData = await _huamiApi.GetHuamiBandData(data, credential.token_info);
                 DataSportResponse resultSportData = await _huamiApi.GetHuamiBandDataSport(data, credential.token_info);
-               
               
                 foreach (Datum e in resultData.data)
                 {
@@ -48,7 +47,6 @@ namespace ApiTranslate.Service
             }
         }
 
-        //Esse método faz os calulos. em algo errado, não ta retornando legal nao
         private static List<DataMiBandEntity> TreatDataResponseToEntity(DataMiBandResponse resultData, DataSportResponse resultSportData) 
         {
             List<DataMiBandEntity> data = new List<DataMiBandEntity>();

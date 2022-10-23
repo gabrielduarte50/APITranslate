@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiTranslate.Controllers
 {
    // [Authorize]
-    [Route("/Patient")]
+    [Route("/")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -23,12 +23,13 @@ namespace ApiTranslate.Controllers
         {
             _hapiFhirService = hapiFhirService;
         }
-       
+
+        [Route("Patient")]
         [HttpGet]
-        public IActionResult GetPatientById(string patientId) //1190270
+        public async Task<IActionResult> GetPatientById(string patientId) //1190270
         {
 
-            ResultData result = _hapiFhirService.GetPatientById(patientId);
+            ResultData result = await _hapiFhirService.GetPatientById(patientId);
 
 
             if (result.Success)
@@ -41,7 +42,7 @@ namespace ApiTranslate.Controllers
             }
         }
 
-        [Route("post")]
+        [Route("Patient/post")]
         [HttpPost]
         public async Task<IActionResult> PostPatientObservation(string patientId, string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
         {
@@ -53,6 +54,23 @@ namespace ApiTranslate.Controllers
             };
 
             ResultData result = await _hapiFhirService.PostObservation(patientId, request);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+            }
+        }
+
+        [Route("Observation")]
+        [HttpGet]
+        public async Task<IActionResult> GetPatientObservation(string patientId) //1190270
+        {
+
+            ResultData result = await _hapiFhirService.GetObservation(patientId);
 
 
             if (result.Success)
