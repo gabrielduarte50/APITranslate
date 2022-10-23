@@ -11,6 +11,11 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
 {
     public class HuamiApi : IHuamiApi
     {
+        private readonly IGoogleApi _googleApi;
+        public HuamiApi(IGoogleApi googleApi)
+        {
+            _googleApi = googleApi;
+        }
         public async Task<CredentialResponse> GetHuamiCredentials(string deviceId) // "FE:22:50:4B:49:D2",
         {
 
@@ -23,13 +28,15 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 };
                 var client = new RestClient(options);
 
+                var code = _googleApi.GetAccessTokenAccount();
+
                 RestRequest request = new RestRequest("login", Method.Post);
                 request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
                 //o campo code vem da autorização do google que vai ser o empecilho do projeto
                 //no momento apenas consegui fazer rodar aqui passando ele depois de logar no app no celular
                 //obter pela planilha e colocar o token gerado nessa hora aqui
-                request.AddParameter("code", HttpUtility.HtmlEncode("ya29.A0ARrdaM8pDD5K-bg3C5Yg6gEMjas7HR8rPmTc3oHIyUkmQ__um_ZVTiX7Etiezj-hm8mFrfgLtd-MSJredoi8niZ4_siY-fXvwXccPQIJh6IyXp3vlKFomd9c2ukjl4VIJxijJwW2jPesnnyMFLx-KsDZgMEI"));
+                request.AddParameter("code", HttpUtility.HtmlEncode($"{code.Token.AccessToken}"));
                 request.AddParameter("grant_type", HttpUtility.HtmlEncode("access_token"));
                 request.AddParameter("allow_registration", HttpUtility.HtmlEncode("false"));
                 request.AddParameter("country_code", HttpUtility.HtmlEncode("BR"));
@@ -39,10 +46,15 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 request.AddParameter("app_version", HttpUtility.HtmlEncode("4.8.1"));
                 request.AddParameter("device_model", HttpUtility.HtmlEncode("android_phone"));
 
-                var response = await client.ExecuteAsync(request); //recebendo erro_code: 0106 -> devido ao campo code
+                var response = await client.ExecuteAsync(request); 
 
-                CredentialResponse responseCredential = JsonConvert.DeserializeObject<CredentialResponse>(response.Content); //ver a melhor forma de mapear da resposta para o que quero
+                CredentialResponse responseCredential = JsonConvert.DeserializeObject<CredentialResponse>(response.Content); 
 
+                if(responseCredential.token_info == null)
+                {
+                    _googleApi.RevokeTokenAccount();
+
+                }
 
                 return responseCredential;
             }
@@ -109,7 +121,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 return responseSportData;
             }
             catch
-            {
+            { // caso dê uma exception devido ao use_id, chamar o revoke token 
                 return null;
             }
         }

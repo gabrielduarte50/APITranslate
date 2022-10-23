@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ApiTranslate.Domain.Entities.Entities
 {
-    public class DataMiBandEntity //corpo final dos elementos da miband - vincular cada elemento da miBnad e do sportData
+    public class DataMiBandEntity 
     {
         public int totalSteps { get; set; }
         public DateTime date_time { get; set; }
@@ -20,7 +20,7 @@ namespace ApiTranslate.Domain.Entities.Entities
         public string? avg_heart_rate { get; set; }
         public int? max_heart_rate { get; set; } 
         public int? min_heart_rate { get; set; } 
-        public string? totalCal { get; set; } //field with cal and runCal -> understand the field Stage and yoursElements
+        public string? totalCal { get; set; } 
     }
 }
 

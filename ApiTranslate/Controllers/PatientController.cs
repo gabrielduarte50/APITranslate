@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Xml;
 using System.IO;
 using Hl7.Fhir.Serialization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiTranslate.Controllers
 {
-    [Route("/Patient")]
+   // [Authorize]
+    [Route("/")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -21,13 +23,13 @@ namespace ApiTranslate.Controllers
         {
             _hapiFhirService = hapiFhirService;
         }
-        //criar o seguinte: uma busca pelo nome ou outra info e caso nao ache,
-        //crie o novo cliente - https://www.youtube.com/watch?v=aP6DRYH-qOI&t=450s.
+
+        [Route("Patient")]
         [HttpGet]
-        public IActionResult GetPatientById(string patientId) //1190270
+        public async Task<IActionResult> GetPatientById(string patientId) //1190270
         {
 
-            ResultData result = _hapiFhirService.GetPatientById(patientId);
+            ResultData result = await _hapiFhirService.GetPatientById(patientId);
 
 
             if (result.Success)
@@ -40,14 +42,35 @@ namespace ApiTranslate.Controllers
             }
         }
 
-        [Route("post")]
+        [Route("Patient/post")]
         [HttpPost]
-        public IActionResult PostPatientObservation(string patientId) //1190270
+        public async Task<IActionResult> PostPatientObservation(string patientId, string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
         {
-            // tentar enviar como um campo Observation - Bundle
-           
+            DataMiBandRequest request = new DataMiBandRequest
+            {
+                DeviceId = deviceId,
+                startDate = startDate,
+                endDate = endDate
+            };
 
-            ResultData result = _hapiFhirService.PostObservation(patientId);
+            ResultData result = await _hapiFhirService.PostObservation(patientId, request);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+            }
+        }
+
+        [Route("Observation")]
+        [HttpGet]
+        public async Task<IActionResult> GetPatientObservation(string patientId) //1190270
+        {
+
+            ResultData result = await _hapiFhirService.GetObservation(patientId);
 
 
             if (result.Success)
