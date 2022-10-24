@@ -5,6 +5,7 @@ using ApiTranslate.Domain.Entities.Response;
 using ApiTranslate.Domain.Interfaces.Repositories;
 using ApiTranslate.Domain.Interfaces.Service;
 using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,13 @@ namespace ApiTranslate.Service
             try
             {
                 var result = await _repo.GetPatientById(patientId);
-                return new ResultData(true, result);
+                var serializer = new FhirJsonSerializer(new SerializerSettings()
+                {
+                    Pretty = true
+                });
+
+                var resultJson = serializer.SerializeToString(result);
+                return new ResultData(true, resultJson);
             }
             catch (Exception e)
             {
