@@ -42,7 +42,7 @@ namespace ApiTranslate.Controllers
             }
         }
 
-        [Route("Patient/post")]
+        [Route("Observation/post")]
         [HttpPost]
         public async Task<IActionResult> PostPatientObservation(string patientId, string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
         {

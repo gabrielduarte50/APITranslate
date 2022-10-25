@@ -261,20 +261,3 @@ namespace ApiTranslate.Service
     }
 }
 
-
-
-
-//tabela de referencia para construcao de informações:
-//Description       |	SNOMED CT  Code	|   LOINC Code	    | UCUM Units
-//
-//Calories Burned	|   (none)	        |   41981-2	        | kcal; J
-//Heart Rate	    |   78564009	    |    8867-4         |{ beats}/ min; / min
-//                                          standing: 69001 - 6
-//                                          sitting: 69000 - 8
-//                                          lying down: 68999 - 2
-//Step Count	    |   n/a	            |   55423-8	         |       –
-//Sleep Duration	|       248263006	|   n/a	             |  h
-//
-//
-
-//VALIDAR SE O SEGUNIDE GUIDELINE PODE SER USADO - https://www.nrces.in/preview/ndhm/fhir/r4/StructureDefinition-ObservationPhysicalActivity.html

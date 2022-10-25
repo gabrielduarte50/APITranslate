@@ -22,7 +22,7 @@ namespace ApiTranslate.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllData(string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        public async Task<ActionResult> GetAllData(string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) // device-id - "FE:22:50:4B:49:D2"
         {
             DataMiBandRequest data = new DataMiBandRequest
             {
@@ -33,7 +33,7 @@ namespace ApiTranslate.Controllers
            
             var resultMiBand = await _huamiService.GetMiBandData(data);
 
-            ResultData result = new ResultData //validar depois - vou precisar refatorar muita coisa
+            ResultData result = new ResultData 
             {
                 Success = true,
                 Data = resultMiBand

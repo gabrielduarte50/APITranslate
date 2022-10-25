@@ -51,17 +51,7 @@ namespace ApiTranslate
             services.AddControllers();
             services.AddHttpContextAccessor();
             services.AddMvc();
-          //  services.AddCors();
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy", builder => builder
-            //    //.WithOrigins("https://localhost:4200", "") //Habilita Cors para endpoint expecifico
-            //    .SetIsOriginAllowed(isOriginAllowed: _ => true) //Habilitar para todas as Rotas
-            //    .AllowAnyMethod()
-            //    .AllowAnyHeader()
-            //    .AllowCredentials()
-            //    );
-            //});
+          
             services.AddScoped<IHapiFhirService, HapiFhirService>();
             services.AddScoped<IHuamiService, HuamiService>();
             services.AddScoped<IHapiFhirRepository, HapiFhirRepository>();

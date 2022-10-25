@@ -16,7 +16,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
         {
             _googleApi = googleApi;
         }
-        public async Task<CredentialResponse> GetHuamiCredentials(string deviceId) // "FE:22:50:4B:49:D2",
+        public async Task<CredentialResponse> GetHuamiCredentials(string deviceId) ,
         {
 
             try

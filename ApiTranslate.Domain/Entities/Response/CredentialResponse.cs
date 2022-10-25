@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ApiTranslate.Domain.Entities //melhorar essas classes, principalmente simplificar a qunatidade de parametros
+namespace ApiTranslate.Domain.Entities 
 {
     public class TokenInfo
     {
