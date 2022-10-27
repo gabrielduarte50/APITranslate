@@ -34,9 +34,9 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
 
             try
             {
-                List<string> result = new List<String>();
+                List<string> result = new List<string>();
                 var searchParameters = new SearchParams();
-                searchParameters.Parameters.Add(new Tuple<string, string>("patient", patientId));
+                searchParameters.Parameters.Add(new Tuple<string, string>("subject", patientId));
                 var responsBundle = await _client.SearchAsync<Observation>(searchParameters).ConfigureAwait(false);
                 foreach (var entry in responsBundle.Entry)
                 {
