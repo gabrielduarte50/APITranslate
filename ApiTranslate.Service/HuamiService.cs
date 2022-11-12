@@ -27,7 +27,7 @@ namespace ApiTranslate.Service
         {
             try
             {
-                CredentialResponse credential = await _huamiApi.GetHuamiCredentials(data.DeviceId);
+                CredentialResponse credential = await _huamiApi.GetHuamiCredentials();
 
                 DataMiBandResponse resultData = await _huamiApi.GetHuamiBandData(data, credential.token_info);
                 DataSportResponse resultSportData = await _huamiApi.GetHuamiBandDataSport(data, credential.token_info);
@@ -72,11 +72,7 @@ namespace ApiTranslate.Service
                     s => (getFormattedTime(s.end_time) == dateSearch)
                 );
 
-                //var walk = resultSportData.data.summary.Find(
-                //    s => (getFormattedTime(s.end_time) == dateSearch)
-                //);
-
-                if(walkList.Count() != 0) //validar se a caloria do summary realmente ta na mesma data da de corrida
+                if(walkList.Count() != 0) 
                 {
                     element.walk_distance = walkList.Sum(w => float.Parse(w.dis, CultureInfo.InvariantCulture.NumberFormat)).ToString();
 

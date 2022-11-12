@@ -42,44 +42,34 @@ namespace ApiTranslate.Controllers
             }
         }
 
-        [Route("Observation/post")]
-        [HttpPost]
-        public async Task<IActionResult> PostPatientObservation(string patientId, string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
+
+        [Route("Observation")]
+        [HttpGet]
+        public async Task<IActionResult> GetPatientObservation(string patientId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
         {
             DataMiBandRequest request = new DataMiBandRequest
             {
-                DeviceId = deviceId,
                 startDate = startDate,
                 endDate = endDate
             };
 
-            ResultData result = await _hapiFhirService.PostObservation(patientId, request);
+            ResultData resultPostData = await _hapiFhirService.PostObservation(patientId, request);
 
-            if (result.Success)
+            if (resultPostData.Success)
             {
-                return Ok(result);
-            }
-            else
+                ResultData result = await _hapiFhirService.GetObservation(patientId);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError, result);
+                }
+            } else
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, result);
-            }
-        }
-
-        [Route("Observation")]
-        [HttpGet]
-        public async Task<IActionResult> GetPatientObservation(string patientId) //1190270
-        {
-
-            ResultData result = await _hapiFhirService.GetObservation(patientId);
-
-
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+                return StatusCode((int)HttpStatusCode.InternalServerError, resultPostData.Data);
             }
         }
 

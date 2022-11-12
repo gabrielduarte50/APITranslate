@@ -46,8 +46,29 @@ namespace ApiTranslate.Service
             {
                 throw e;
             }
-        } 
-        
+        }
+
+        /// <summary>
+        /// Get all observation to patient 
+        /// </summary>
+        /// <param name="patientId">Patient Id</param>
+        /// <param name="observation">Patient Id</param>
+        /// <returns>Models.Patient</returns>
+        public async Task<ResultData> GetObservation(string patientId)
+        {
+
+            try
+            {
+                var result = await _repo.GetObservation(patientId);
+
+                return new ResultData(true, result);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         /// <summary>
         /// Create a observation to patient 
         /// </summary>
@@ -64,7 +85,6 @@ namespace ApiTranslate.Service
                 if (patient == null) return null;
 
                 List<DataMiBandEntity> resultMiBandData = await _huamiService.GetMiBandData(request);
-                // ta retornando valores errados. Ha leitura certa, mas na conversao tem algo estranho
 
                 if (resultMiBandData == null) return null;
 
@@ -75,7 +95,7 @@ namespace ApiTranslate.Service
                     _repo.PostObservationData(CreateStepCountObservationResource(patient, miBandData));
                 }
 
-                return new ResultData(true, "Enviado com sucesso");   //repensar a estrutura
+                return new ResultData(true, "Enviado com sucesso");   
             }
             catch (Exception e)
             {
@@ -93,7 +113,12 @@ namespace ApiTranslate.Service
         {
             Observation obs = new Observation
             {
-                Value = new Quantity(Convert.ToDecimal(data.avg_heart_rate), "Hz"),
+                Value = new Quantity
+                {
+                    Value = Convert.ToDecimal(data.avg_heart_rate),
+                    Unit = "/min",
+                    System = "http://unitsofmeasure.org",
+                },
                 Code = new CodeableConcept
                 {
                     Coding = new List<Coding> {
@@ -130,26 +155,7 @@ namespace ApiTranslate.Service
             return obs;
         }
 
-        /// <summary>
-        /// Get all observation to patient 
-        /// </summary>
-        /// <param name="patientId">Patient Id</param>
-        /// <param name="observation">Patient Id</param>
-        /// <returns>Models.Patient</returns>
-        public async Task<ResultData> GetObservation(string patientId)
-        {
-
-            try
-            {   
-                var result = await _repo.GetObservation(patientId);
-
-                return new ResultData(true, result);  
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+        
 
         /// <summary>
         /// Create a BurnedCalories observation to patient 

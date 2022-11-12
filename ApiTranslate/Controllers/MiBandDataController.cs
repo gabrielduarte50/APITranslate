@@ -22,11 +22,10 @@ namespace ApiTranslate.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllData(string deviceId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) // device-id - "FE:22:50:4B:49:D2"
+        public async Task<ActionResult> GetAllData([FromQuery] DateTime startDate, [FromQuery] DateTime endDate) // device-id - "FE:22:50:4B:49:D2"
         {
             DataMiBandRequest data = new DataMiBandRequest
             {
-                DeviceId = deviceId,
                 startDate = startDate,
                 endDate = endDate
             };                   
