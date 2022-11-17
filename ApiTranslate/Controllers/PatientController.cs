@@ -44,7 +44,7 @@ namespace ApiTranslate.Controllers
 
         [Route("Observation")]
         [HttpPost]
-        public async Task<IActionResult> GetPatientObservation(string patientId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) 
+        public async Task<IActionResult> PostPatientObservation(string patientId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) 
         {
             DataMiBandRequest request = new DataMiBandRequest
             {
