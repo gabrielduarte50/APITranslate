@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApiTranslate.Domain\ApiTranslate.Domain.csproj" />
-    <ProjectReference Include="..\ApiTranslate.Infra.CrossCutting\ApiTranslate.Infra.CrossCutting.csproj" />
+    <ProjectReference Include="..\ApiTranslate.Infra.CrossCutting\ApiTranslate.Infra.Data.csproj" />
     <ProjectReference Include="..\ApiTranslate.Service\ApiTranslate.Service.csproj" />
   </ItemGroup>
 

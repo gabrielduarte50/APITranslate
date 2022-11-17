@@ -77,10 +77,15 @@ namespace ApiTranslate.Service
         /// <returns>Models.Patient</returns>
         public async Task<ResultData> PostObservation(string patientId, DataMiBandRequest request)
         {
-            
+            var serializer = new FhirJsonSerializer(new SerializerSettings()
+            {
+                Pretty = true
+            });
+
             try
-            {   //busca o paciente
+            {  
                 Patient patient = await _repo.GetPatientById(patientId);
+                List<string> result = new List<string>();
 
                 if (patient == null) return null;
 
@@ -90,12 +95,12 @@ namespace ApiTranslate.Service
 
                 foreach (DataMiBandEntity miBandData in resultMiBandData)
                 {
-                    _repo.PostObservationData(CreateHeartRaceObservationResource(patient, miBandData));
-                    _repo.PostObservationData(CreateBurnedCaloriesObservationResource(patient, miBandData));
-                    _repo.PostObservationData(CreateStepCountObservationResource(patient, miBandData));
+                    result.Add(serializer.SerializeToString(_repo.PostObservationData(CreateHeartRaceObservationResource(patient, miBandData))));
+                    result.Add(serializer.SerializeToString(_repo.PostObservationData(CreateBurnedCaloriesObservationResource(patient, miBandData))));
+                    result.Add(serializer.SerializeToString(_repo.PostObservationData(CreateStepCountObservationResource(patient, miBandData))));
                 }
 
-                return new ResultData(true, "Enviado com sucesso");   
+                return new ResultData(true, result);   
             }
             catch (Exception e)
             {

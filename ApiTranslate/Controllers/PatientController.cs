@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ApiTranslate.Controllers
 {
-   // [Authorize]
     [Route("/")]
     [ApiController]
     public class PatientController : ControllerBase
@@ -26,7 +25,7 @@ namespace ApiTranslate.Controllers
 
         [Route("Patient")]
         [HttpGet]
-        public async Task<IActionResult> GetPatientById(string patientId) //1190270
+        public async Task<IActionResult> GetPatientById(string patientId) 
         {
 
             ResultData result = await _hapiFhirService.GetPatientById(patientId);
@@ -44,8 +43,8 @@ namespace ApiTranslate.Controllers
 
 
         [Route("Observation")]
-        [HttpGet]
-        public async Task<IActionResult> GetPatientObservation(string patientId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) //1190270
+        [HttpPost]
+        public async Task<IActionResult> GetPatientObservation(string patientId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) 
         {
             DataMiBandRequest request = new DataMiBandRequest
             {
@@ -53,23 +52,35 @@ namespace ApiTranslate.Controllers
                 endDate = endDate
             };
 
-            ResultData resultPostData = await _hapiFhirService.PostObservation(patientId, request);
+            ResultData result = await _hapiFhirService.PostObservation(patientId, request);
 
-            if (resultPostData.Success)
+                            
+            if (result.Success)
             {
-                ResultData result = await _hapiFhirService.GetObservation(patientId);
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
+            }
+            
+        }
 
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return StatusCode((int)HttpStatusCode.InternalServerError, result);
-                }
-            } else
+        [Route("Observations")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllObservations(string patientId) 
+        {
+
+            ResultData result = await _hapiFhirService.GetObservation(patientId);
+
+
+            if (result.Success)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, resultPostData.Data);
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, result);
             }
         }
 

@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ApiTranslate.Infra.CrossCutting;
 using ApiTranslate.Domain;
 using ApiTranslate.Domain.Interfaces.Service;
 using ApiTranslate.Domain.Interfaces.Apis;
 using ApiTranslate.Infra.CrossCutting.Apis;
 using ApiTranslate.Domain.Interfaces.Repositories;
-using ApiTranslate.Infra.CrossCutting.Repositories;
+using ApiTranslate.Infra.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ApiTranslate

@@ -7,9 +7,9 @@ using ApiTranslate.Domain.Interfaces.Repositories;
 using Newtonsoft.Json;
 using Hl7.Fhir.Serialization;
 
-namespace ApiTranslate.Infra.CrossCutting.Repositories
+namespace ApiTranslate.Infra.Data.Repositories
 {
-    public class HapiFhirRepository : IHapiFhirRepository 
+    public class HapiFhirRepository : IHapiFhirRepository
     {
         private const string _fhirServer = "http://hapi.fhir.org/baseR4";
         private readonly FhirClient _client;
@@ -17,7 +17,7 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
         public HapiFhirRepository()
         {
             // Create a client
-           
+
             _client = new FhirClient(_fhirServer);
             _client.Settings.PreferredFormat = ResourceFormat.Json;
             _client.Settings.PreferredReturn = Prefer.ReturnRepresentation;
@@ -42,7 +42,7 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
                 {
                     var observation = (Observation)entry.Resource;
                     result.Add(serializer.SerializeToString(observation));
-                  
+
                 }
 
                 return result;
@@ -57,11 +57,11 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
         public async Task<Patient> GetPatientById(string patientId)
         {
             var location = new Uri($"https://hapi.fhir.org/baseR4/Patient/{patientId}");
-          
+
             try
             {
                 var response = await _client.ReadAsync<Patient>(location);
-            
+
                 return response;
             }
             catch (Hl7.Fhir.ElementModel.StructuralTypeException structuralTypeException)
