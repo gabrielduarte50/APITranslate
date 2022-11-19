@@ -68,18 +68,14 @@ namespace ApiTranslate.Service
                 //gain data from sport data - validar se o type é ou nao importante
                 var dateSearch = element.date_time.ToShortDateString().ToString();
 
+                element.totalCal = summaryElements.stp.cal.ToString();
+
                 var walkList = resultSportData.data.summary.FindAll(
                     s => (getFormattedTime(s.end_time) == dateSearch)
                 );
 
                 if(walkList.Count() != 0) 
                 {
-                    element.walk_distance = walkList.Sum(w => float.Parse(w.dis, CultureInfo.InvariantCulture.NumberFormat)).ToString();
-
-                    //calories
-                    var totalCalRun = walkList.Sum(w => float.Parse(w.calorie, CultureInfo.InvariantCulture.NumberFormat)).ToString(); //calorias de corrida
-                    element.totalCal = Somar(totalCalRun, summaryElements.stp.cal.ToString()); 
-
                     //heart
                     element.avg_heart_rate = (walkList.Sum(w => float.Parse(w.avg_heart_rate, CultureInfo.InvariantCulture.NumberFormat)) /walkList.Count()).ToString(); 
 
