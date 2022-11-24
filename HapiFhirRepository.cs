@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
-using Hl7.Fhir.Serialization;
 using System.Threading.Tasks;
 using ApiTranslate.Domain.Interfaces.Repositories;
-using System.Linq;
-using ApiTranslate.Domain.Entities.Response;
 using Newtonsoft.Json;
-using System.Text.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
-using static Google.Apis.Requests.BatchRequest;
+using Hl7.Fhir.Serialization;
 
-namespace ApiTranslate.Infra.CrossCutting.Repositories
+namespace ApiTranslate.Infra.Data.Repositories
 {
-    public class HapiFhirRepository : IHapiFhirRepository 
+    public class HapiFhirRepository : IHapiFhirRepository
     {
         private const string _fhirServer = "http://hapi.fhir.org/baseR4";
         private readonly FhirClient _client;
@@ -22,27 +17,34 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
         public HapiFhirRepository()
         {
             // Create a client
-           
+
             _client = new FhirClient(_fhirServer);
             _client.Settings.PreferredFormat = ResourceFormat.Json;
             _client.Settings.PreferredReturn = Prefer.ReturnRepresentation;
+            _client.Settings.UseFormatParameter = true;
             _client.Settings.Timeout = 120000; // The timeout is set in milliseconds, with a default of 100000
         }
 
-        public async Task<List<Observation>> GetObservation(string patientId)
+        public async Task<List<string>> GetObservation(string patientId)
         {
+            var serializer = new FhirJsonSerializer(new SerializerSettings()
+            {
+                Pretty = true
+            });
+
             try
             {
-                List<Observation> result = new List<Observation>();
+                List<string> result = new List<string>();
                 var searchParameters = new SearchParams();
-                searchParameters.Parameters.Add(new Tuple<string, string>("patient", patientId));
+                searchParameters.Parameters.Add(new Tuple<string, string>("subject", patientId));
                 var responsBundle = await _client.SearchAsync<Observation>(searchParameters).ConfigureAwait(false);
                 foreach (var entry in responsBundle.Entry)
                 {
                     var observation = (Observation)entry.Resource;
-                    result.Add(observation);
-                  
+                    result.Add(serializer.SerializeToString(observation));
+
                 }
+
                 return result;
 
             }
@@ -58,7 +60,7 @@ namespace ApiTranslate.Infra.CrossCutting.Repositories
 
             try
             {
-                Patient response = await _client.ReadAsync<Patient>(location);
+                var response = await _client.ReadAsync<Patient>(location);
 
                 return response;
             }

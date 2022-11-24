@@ -6,20 +6,20 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ApiTranslate.Infra.CrossCutting
+namespace ApiTranslate.Infra.CrossCutting.Apis
 {
-    public class GoogleApi : IGoogleApi 
+    public class GoogleApi : IGoogleApi
     {
-        UserCredential userCredential ;
+        UserCredential userCredential;
         public UserCredential GetAccessTokenAccount()
         {
-            
+            //ISOLAR EM ALGUM LUGAR
             string OAUTH_CLIENT_ID = "412602187402-2kmnlf3e71ift7re24sgid4eom25kjrt.apps.googleusercontent.com";
             string OAUTH_CLIENT_SECRET = "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";
 
 
             string[] scopes =
-            {   
+            {
                 "https://www.googleapis.com/auth/userinfo.email",
                 "email",
                 "openid",
@@ -49,7 +49,7 @@ namespace ApiTranslate.Infra.CrossCutting
         {
             CancellationTokenSource source = new CancellationTokenSource();
             CancellationToken taskCancellationToken = source.Token;
-            
+
             userCredential.RevokeTokenAsync(taskCancellationToken);
 
             return userCredential;

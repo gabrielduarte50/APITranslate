@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace ApiTranslate.Service
         {
             try
             {
-                CredentialResponse credential = await _huamiApi.GetHuamiCredentials(data.DeviceId);
+                CredentialResponse credential = await _huamiApi.GetHuamiCredentials();
 
                 DataMiBandResponse resultData = await _huamiApi.GetHuamiBandData(data, credential.token_info);
                 DataSportResponse resultSportData = await _huamiApi.GetHuamiBandDataSport(data, credential.token_info);
@@ -63,36 +64,21 @@ namespace ApiTranslate.Service
                 //transform MiBandData into a part of Entity
                 element.rhr = summaryElements.slp.rhr > 0 ? summaryElements.slp.rhr : 0; 
                 element.totalSteps = summaryElements.stp.ttl;
-                element.totalPai = summaryElements.goal; 
-
-                //sleep data
-                var tstInMs = summaryElements.slp.ed * 1000 - summaryElements.slp.st * 1000 - summaryElements.slp.wk * 60 * 1000;
-                element.deep_sleep = getFormattedDuration(summaryElements.slp.dp * 60 * 1000);
-                element.light_sleep = getFormattedDuration(summaryElements.slp.lt * 60 * 1000);
-                element.rem_sleep = getFormattedDuration(summaryElements.slp.dt * 60 * 1000);
-                element.sleep_duration = getFormattedDuration(tstInMs);
 
                 //gain data from sport data - validar se o type é ou nao importante
                 var dateSearch = element.date_time.ToShortDateString().ToString();
-                var walk = resultSportData.data.summary.Find(
+
+                element.totalCal = summaryElements.stp.cal.ToString();
+
+                var walkList = resultSportData.data.summary.FindAll(
                     s => (getFormattedTime(s.end_time) == dateSearch)
                 );
 
-                if(walk != null) //validar se a caloria do summary realmente ta na mesma data da de corrida
+                if(walkList.Count() != 0) 
                 {
-                    element.walk_distance = walk.dis; 
-
-                    //calories
-                    var totalCalRun = walk.calorie; //calorias de corrida
-                    element.totalCal = Somar(totalCalRun, summaryElements.stp.cal.ToString()); 
-
                     //heart
-                    element.avg_heart_rate = walk.avg_heart_rate;
-                    element.max_heart_rate = walk.max_heart_rate;
-                    element.min_heart_rate = walk.min_heart_rate;
+                    element.avg_heart_rate = (walkList.Sum(w => float.Parse(w.avg_heart_rate, CultureInfo.InvariantCulture.NumberFormat)) /walkList.Count()).ToString(); 
 
-                    //clear walk
-                    walk = null;
                 }
 
                 data.Add(new DataMiBandEntity()
@@ -101,10 +87,6 @@ namespace ApiTranslate.Service
                     rhr = element.rhr, 
                     totalSteps = element.totalSteps,
                     totalPai = element.totalPai,
-                    deep_sleep = element.deep_sleep,
-                    light_sleep = element.light_sleep, 
-                    rem_sleep = element.rem_sleep ,
-                    sleep_duration = element.sleep_duration,
                     totalCal = element.totalCal,
                     avg_heart_rate = element.avg_heart_rate
                 });

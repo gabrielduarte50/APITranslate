@@ -16,7 +16,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
         {
             _googleApi = googleApi;
         }
-        public async Task<CredentialResponse> GetHuamiCredentials(string deviceId) // "FE:22:50:4B:49:D2",
+        public async Task<CredentialResponse> GetHuamiCredentials() 
         {
 
             try
@@ -41,7 +41,7 @@ namespace ApiTranslate.Infra.CrossCutting.Apis
                 request.AddParameter("allow_registration", HttpUtility.HtmlEncode("false"));
                 request.AddParameter("country_code", HttpUtility.HtmlEncode("BR"));
                 request.AddParameter("app_name", HttpUtility.HtmlEncode("com.xiaomi.hm.health"));
-                request.AddParameter("device_id", HttpUtility.HtmlEncode($"{deviceId}"));
+                request.AddParameter("device_id", HttpUtility.HtmlEncode($"00:00:00:00:00"));
                 request.AddParameter("third_name", HttpUtility.HtmlEncode("google"));
                 request.AddParameter("app_version", HttpUtility.HtmlEncode("4.8.1"));
                 request.AddParameter("device_model", HttpUtility.HtmlEncode("android_phone"));

@@ -5,6 +5,7 @@ using ApiTranslate.Domain.Entities.Response;
 using ApiTranslate.Domain.Interfaces.Repositories;
 using ApiTranslate.Domain.Interfaces.Service;
 using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -33,14 +34,41 @@ namespace ApiTranslate.Service
             try
             {
                 var result = await _repo.GetPatientById(patientId);
+                var serializer = new FhirJsonSerializer(new SerializerSettings()
+                {
+                    Pretty = true
+                });
+
+                var resultJson = serializer.SerializeToString(result);
+                return new ResultData(true, resultJson);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Get all observation to patient 
+        /// </summary>
+        /// <param name="patientId">Patient Id</param>
+        /// <param name="observation">Patient Id</param>
+        /// <returns>Models.Patient</returns>
+        public async Task<ResultData> GetObservation(string patientId)
+        {
+
+            try
+            {
+                var result = await _repo.GetObservation(patientId);
+
                 return new ResultData(true, result);
             }
             catch (Exception e)
             {
                 throw e;
             }
-        } 
-        
+        }
+
         /// <summary>
         /// Create a observation to patient 
         /// </summary>
@@ -49,26 +77,30 @@ namespace ApiTranslate.Service
         /// <returns>Models.Patient</returns>
         public async Task<ResultData> PostObservation(string patientId, DataMiBandRequest request)
         {
-            
+            var serializer = new FhirJsonSerializer(new SerializerSettings()
+            {
+                Pretty = true
+            });
+
             try
-            {   //busca o paciente
+            {  
                 Patient patient = await _repo.GetPatientById(patientId);
+                List<string> result = new List<string>();
 
                 if (patient == null) return null;
 
                 List<DataMiBandEntity> resultMiBandData = await _huamiService.GetMiBandData(request);
-                // ta retornando valores errados. Ha leitura certa, mas na conversao tem algo estranho
 
                 if (resultMiBandData == null) return null;
 
                 foreach (DataMiBandEntity miBandData in resultMiBandData)
                 {
-                    _repo.PostObservationData(CreateHeartRaceObservationResource(patient, miBandData));
-                    _repo.PostObservationData(CreateBurnedCaloriesObservationResource(patient, miBandData));
-                    _repo.PostObservationData(CreateStepCountObservationResource(patient, miBandData));
+                    result.Add(serializer.SerializeToString(_repo.PostObservationData(CreateHeartRaceObservationResource(patient, miBandData))));
+                    result.Add(serializer.SerializeToString(_repo.PostObservationData(CreateBurnedCaloriesObservationResource(patient, miBandData))));
+                    result.Add(serializer.SerializeToString(_repo.PostObservationData(CreateStepCountObservationResource(patient, miBandData))));
                 }
 
-                return new ResultData(true, "Enviado com sucesso");   //repensar a estrutura
+                return new ResultData(true, result);   
             }
             catch (Exception e)
             {
@@ -86,7 +118,12 @@ namespace ApiTranslate.Service
         {
             Observation obs = new Observation
             {
-                Value = new Quantity(Convert.ToDecimal(data.avg_heart_rate), "Hz"),
+                Value = new Quantity
+                {
+                    Value = Convert.ToDecimal(data.avg_heart_rate),
+                    Unit = "/min",
+                    System = "http://unitsofmeasure.org",
+                },
                 Code = new CodeableConcept
                 {
                     Coding = new List<Coding> {
@@ -123,26 +160,7 @@ namespace ApiTranslate.Service
             return obs;
         }
 
-        /// <summary>
-        /// Get all observation to patient 
-        /// </summary>
-        /// <param name="patientId">Patient Id</param>
-        /// <param name="observation">Patient Id</param>
-        /// <returns>Models.Patient</returns>
-        public async Task<ResultData> GetObservation(string patientId)
-        {
-
-            try
-            {   
-                var result = await _repo.GetObservation(patientId);
-
-                return new ResultData(true, result);  
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+        
 
         /// <summary>
         /// Create a BurnedCalories observation to patient 
@@ -254,20 +272,3 @@ namespace ApiTranslate.Service
     }
 }
 
-
-
-
-//tabela de referencia para construcao de informações:
-//Description       |	SNOMED CT  Code	|   LOINC Code	    | UCUM Units
-//
-//Calories Burned	|   (none)	        |   41981-2	        | kcal; J
-//Heart Rate	    |   78564009	    |    8867-4         |{ beats}/ min; / min
-//                                          standing: 69001 - 6
-//                                          sitting: 69000 - 8
-//                                          lying down: 68999 - 2
-//Step Count	    |   n/a	            |   55423-8	         |       –
-//Sleep Duration	|       248263006	|   n/a	             |  h
-//
-//
-
-//VALIDAR SE O SEGUNIDE GUIDELINE PODE SER USADO - https://www.nrces.in/preview/ndhm/fhir/r4/StructureDefinition-ObservationPhysicalActivity.html

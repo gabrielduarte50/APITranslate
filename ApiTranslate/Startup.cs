@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ApiTranslate.Infra.CrossCutting;
 using ApiTranslate.Domain;
 using ApiTranslate.Domain.Interfaces.Service;
 using ApiTranslate.Domain.Interfaces.Apis;
 using ApiTranslate.Infra.CrossCutting.Apis;
 using ApiTranslate.Domain.Interfaces.Repositories;
-using ApiTranslate.Infra.CrossCutting.Repositories;
+using ApiTranslate.Infra.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ApiTranslate
@@ -51,17 +50,7 @@ namespace ApiTranslate
             services.AddControllers();
             services.AddHttpContextAccessor();
             services.AddMvc();
-          //  services.AddCors();
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy", builder => builder
-            //    //.WithOrigins("https://localhost:4200", "") //Habilita Cors para endpoint expecifico
-            //    .SetIsOriginAllowed(isOriginAllowed: _ => true) //Habilitar para todas as Rotas
-            //    .AllowAnyMethod()
-            //    .AllowAnyHeader()
-            //    .AllowCredentials()
-            //    );
-            //});
+          
             services.AddScoped<IHapiFhirService, HapiFhirService>();
             services.AddScoped<IHuamiService, HuamiService>();
             services.AddScoped<IHapiFhirRepository, HapiFhirRepository>();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30503.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTranslate", "ApiTranslate\ApiTranslate.csproj", "{997A80EB-A616-4053-A04F-266E1FAC2471}"
 EndProject
@@ -13,9 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{97DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTranslate.Domain", "ApiTranslate.Domain\ApiTranslate.Domain.csproj", "{A3ED2CFD-CA53-4944-AAF7-130E24CDFB50}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossCutting", "CrossCutting", "{6DA31741-74FC-4853-8066-3ECA77CD1E48}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTranslate.Infra.CrossCutting", "ApiTranslate.Infra.CrossCutting\ApiTranslate.Infra.CrossCutting.csproj", "{C06E0D16-83CC-4CA1-8610-715B94D3371C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTranslate.Infra.Data", "ApiTranslate.Infra.CrossCutting\ApiTranslate.Infra.Data.csproj", "{C06E0D16-83CC-4CA1-8610-715B94D3371C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTranslate.Service", "ApiTranslate.Service\ApiTranslate.Service.csproj", "{14CD77D4-88CF-43CD-AAE0-826E4EBD1D36}"
 EndProject
@@ -47,8 +45,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A3ED2CFD-CA53-4944-AAF7-130E24CDFB50} = {3C2B4125-7ED9-42D1-9A09-82926FB7282B}
-		{6DA31741-74FC-4853-8066-3ECA77CD1E48} = {CE62CF4B-1A02-47DE-A85A-2ECE60144F02}
-		{C06E0D16-83CC-4CA1-8610-715B94D3371C} = {6DA31741-74FC-4853-8066-3ECA77CD1E48}
+		{C06E0D16-83CC-4CA1-8610-715B94D3371C} = {CE62CF4B-1A02-47DE-A85A-2ECE60144F02}
 		{14CD77D4-88CF-43CD-AAE0-826E4EBD1D36} = {97DE9C59-CFE4-482F-BA97-4E30DED80F3F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -11,7 +11,7 @@ namespace ApiTranslate.Domain.Interfaces.Repositories
     {
         Task<Patient> GetPatientById(string patientId);
         Observation PostObservationData(Observation obs);
-        Task<List<Observation>> GetObservation(string patientId);
+        Task<List<string>> GetObservation(string patientId);
        
     }
 }
